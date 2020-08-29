@@ -4,4 +4,4 @@ A full stack project to learn &amp; figure out how to build a back-end and front
 
 #### This project is followed from the repo created by benawad
 
-Link - https://github.com/benawad/lireddit
+Repo Link - https://github.com/benawad/lireddit
