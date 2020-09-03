@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, Flex, Link } from "@chakra-ui/core";
+import { Box, Flex, Link, Button } from "@chakra-ui/core";
 import NextLink from "next/link";
-import { useMeQuery } from "../generated/graphql";
+import { useMeQuery, useLogoutMutation } from "../generated/graphql";
 
 export const NavBar: React.FC<{}> = ({}) => {
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery();
   let body = null;
   // is fetching()
@@ -15,12 +16,12 @@ export const NavBar: React.FC<{}> = ({}) => {
     body = (
       <>
         <NextLink href="/login">
-          <Link mr={6} color="blue.700" fontWeight="semibold">
+          <Link mr={6} color="blue.900" fontWeight="semibold">
             Login
           </Link>
         </NextLink>
         <NextLink href="/register">
-          <Link color="blue.700" fontWeight="semibold">
+          <Link color="blue.900" fontWeight="semibold">
             Register
           </Link>
         </NextLink>
@@ -29,22 +30,27 @@ export const NavBar: React.FC<{}> = ({}) => {
   } else {
     body = (
       <>
-        <NextLink href="">
-          <Link mr={6} color="blue.700" fontWeight="semibold">
-            {data.me.username}
-          </Link>
-        </NextLink>
-        <NextLink href="">
-          <Link color="blue.700" fontWeight="semibold">
-            Logout
-          </Link>
-        </NextLink>
+        <Link mr={6} color="blue.900" fontWeight="medium">
+          {data.me.username}
+        </Link>
+
+        <Button
+          color="blue.900"
+          fontWeight="medium"
+          variant="link"
+          onClick={() => {
+            logout();
+          }}
+          isLoading={logoutFetching}
+        >
+          Logout
+        </Button>
       </>
     );
   }
 
   return (
-    <Box bg="white" py={3} boxShadow="sm">
+    <Box bg="blue.200" py={3} boxShadow="sm">
       <Box w="100%" maxW="1140px" mx="auto">
         <Flex justify="flex-end" align="center" px={8}>
           {body}
