@@ -6,7 +6,6 @@ import { useMeQuery } from "../generated/graphql";
 export const NavBar: React.FC<{}> = ({}) => {
   const [{ data, fetching }] = useMeQuery();
   let body = null;
-
   // is fetching()
   // is loged-out
   // loged-in
