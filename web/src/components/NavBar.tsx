@@ -5,9 +5,11 @@ import { useMeQuery, useLogoutMutation } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 
 export const NavBar: React.FC<{}> = ({}) => {
-  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
+  const [
+    { data: logoutData, fetching: logoutFetching },
+    logout,
+  ] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({ pause: isServer() });
-  console.log(data);
 
   let body = null;
   // is fetching()
@@ -19,26 +21,23 @@ export const NavBar: React.FC<{}> = ({}) => {
     body = (
       <>
         <NextLink href="/login">
-          <Link mr={6} color="blue.900" fontWeight="semibold">
+          <Link mr={6} fontWeight="semibold">
             Login
           </Link>
         </NextLink>
         <NextLink href="/register">
-          <Link color="blue.900" fontWeight="semibold">
-            Register
-          </Link>
+          <Link fontWeight="semibold">Register</Link>
         </NextLink>
       </>
     );
   } else {
     body = (
       <>
-        <Link mr={6} color="blue.900" fontWeight="medium">
+        <Link mr={6} fontWeight="medium">
           {data.me.username}
         </Link>
 
         <Button
-          color="blue.900"
           fontWeight="medium"
           variant="link"
           onClick={() => {
