@@ -49,10 +49,14 @@ export const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
             />
 
             {tokenError ? (
-              <Flex>
-                <Box>{tokenError}</Box>
+              <Flex justifyContent="space-between" mt="2">
+                <Box style={{ color: "red" }} fontSize=".85rem">
+                  {tokenError}
+                </Box>
                 <NextLink href="/forgot-password">
-                  <Link>Get another token</Link>
+                  <Link style={{ color: "blue" }} fontSize=".85rem">
+                    Get another token
+                  </Link>
                 </NextLink>
               </Flex>
             ) : null}
