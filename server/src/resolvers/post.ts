@@ -43,7 +43,7 @@ export class PostResolver {
     return post.text.slice(0, 50);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async vote(
     @Arg("postId", () => Int) postId: number,
@@ -126,7 +126,7 @@ export class PostResolver {
     );
     */
 
-    return true;
+    return Post.findOne({ where: { id: postId } });
   }
 
   @Query(() => PaginatedPosts)

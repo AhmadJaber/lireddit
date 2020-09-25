@@ -61,7 +61,7 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  vote: Scalars['Boolean'];
+  vote: Post;
   createPost: Post;
   updatePost?: Maybe<Post>;
   deletePost: Scalars['Boolean'];
@@ -249,7 +249,10 @@ export type VoteMutationVariables = Exact<{
 
 export type VoteMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'vote'>
+  & { vote: (
+    { __typename?: 'Post' }
+    & Pick<Post, 'id' | 'points'>
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -388,7 +391,10 @@ export function useRegisterMutation() {
 };
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {
-  vote(value: $value, postId: $postId)
+  vote(value: $value, postId: $postId) {
+    id
+    points
+  }
 }
     `;
 
