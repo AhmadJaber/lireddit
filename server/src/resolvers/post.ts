@@ -16,6 +16,7 @@ import {
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
+import { Updoot } from "src/entities/Updoot";
 
 @InputType()
 class PostInput {
@@ -52,6 +53,7 @@ export class PostResolver {
     const { userId } = req.session;
     const isUpdoot = value !== -1;
     const realValue = isUpdoot ? 1 : -1;
+    const updoot = await Updoot.findOne({ where: { postId, userId } });
 
     /*
     * using typeorm methods
