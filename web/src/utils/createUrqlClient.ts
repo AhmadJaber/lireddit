@@ -95,6 +95,7 @@ export const createUrqlClient = (ssrExchange: any) => ({
                 fragment _ on Post {
                   id
                   points
+                  voteStatus
                 }
               `,
               { id: postId } as any
@@ -102,16 +103,25 @@ export const createUrqlClient = (ssrExchange: any) => ({
             console.log(data);
 
             if (data) {
-              const newPoints = (data.points as number) + value;
+              // downdoot or updoot will be added onetime
+              if (data.voteStatus === value) {
+                return;
+              }
 
-              // writeFragment
+              // if haven't voted before value would 1/-1
+              // if we changing our vote it would be 2/-2
+              const newPoints =
+                (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
+
+              // writeFragment, change voteStatus
               cache.writeFragment(
                 gql`
                   fragment __ on Post {
                     points
+                    voteStatus
                   }
                 `,
-                { id: postId, points: newPoints } as any
+                { id: postId, points: newPoints, voteStatus: value } as any
               );
             }
           },
