@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { usePostsQuery } from "../generated/graphql";
+import { useMeQuery, usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import {
   Link,
@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { UpdootSection } from "../components/UpdootSection";
+import { isServer } from "../utils/isServer";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -23,6 +24,7 @@ const Index = () => {
   });
   console.log(variables);
   const [{ data, fetching }] = usePostsQuery({ variables });
+  const [{ data: user }] = useMeQuery({ pause: isServer() });
 
   if (!data && !fetching) {
     return (
@@ -34,14 +36,16 @@ const Index = () => {
 
   return (
     <Layout variant="regular">
-      <Flex justifyContent="space-between" alignItems="center">
-        <Heading>LiReddit</Heading>
-        <NextLink href="/create-post">
-          <Link color="teal.500">Create Post!!</Link>
-        </NextLink>
-      </Flex>
+      {!user?.me ? null : (
+        <Flex justifyContent="flex-end">
+          <NextLink href="/create-post">
+            <Button as={Link} color="teal.500" mb={2}>
+              Create Post!!
+            </Button>
+          </NextLink>
+        </Flex>
+      )}
 
-      <br />
       {!data && fetching ? (
         <div>Loading....</div>
       ) : (
@@ -51,7 +55,11 @@ const Index = () => {
               <UpdootSection post={p} />
 
               <Box>
-                <Heading fontSize="xl">{p.title}</Heading>
+                <NextLink href="/post/[id]" as={`/post/${p.id}`}>
+                  <Link>
+                    <Heading fontSize="xl">{p.title}</Heading>
+                  </Link>
+                </NextLink>
                 <Text fontSize=".9rem">posted by {p.creator.username}</Text>
                 <Text mt={4}>{`${p.textSnippet} ....`}</Text>
               </Box>
