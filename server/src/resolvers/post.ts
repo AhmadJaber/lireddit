@@ -236,13 +236,32 @@ export class PostResolver {
   }
 
   @Mutation(() => Boolean)
-  async deletePost(@Arg("id") id: number): Promise<boolean> {
-    await Post.delete(id);
+  @UseMiddleware(isAuth)
+  async deletePost(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    /*
+    * explicit way to delete, not cascade
+    const post = await Post.findOne(id);
+    if (!post) {
+      return false;
+    }
+
+    if (post.creatorId !== req.session.userId) {
+      throw new Error("not authorized");
+    }
+
+    await Updoot.delete({ postId: id });
+    await Post.delete({ id });
+    */
+
+    await Post.delete({ id, creatorId: req.session.userId });
     return true;
   }
 }
 
 /**
- * Combining graphql resolver with mikro-orm
- * Doing  CRUD using mikro-orm through graphql
+ * Combining graphql resolver with type-orm
+ * Doing  CRUD using type-orm through graphql
  */
