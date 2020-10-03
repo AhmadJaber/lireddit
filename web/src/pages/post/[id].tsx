@@ -1,8 +1,8 @@
 import { Box, Flex } from "@chakra-ui/core";
 import { withUrqlClient } from "next-urql";
-import { useRouter } from "next/router";
 import React from "react";
 import { Layout } from "../../components/Layout";
+import { PostButtons } from "../../components/PostButtons";
 import { usePostQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useGetIntId } from "../../utils/useGetIntId";
@@ -52,10 +52,13 @@ const Post = () => {
         fontWeight="bold"
         fontSize="1.5rem"
         textAlign="center"
-        mb={8}
+        mb={6}
         paddingTop="2em"
       >
         {data.post.title}
+      </Box>
+      <Box textAlign="center" marginBottom="2rem">
+        <PostButtons id={data.post.id} creatorId={data.post.creator.id} />
       </Box>
       <Box as="p" fontSize="1.1rem">
         {data.post.text}

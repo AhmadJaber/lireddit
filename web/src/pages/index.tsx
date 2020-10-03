@@ -1,22 +1,9 @@
 import { useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import {
-  useDeletePostMutation,
-  useMeQuery,
-  usePostsQuery,
-} from "../generated/graphql";
+import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
-import {
-  Link,
-  Stack,
-  Box,
-  Text,
-  Heading,
-  Flex,
-  Button,
-  IconButton,
-} from "@chakra-ui/core";
+import { Link, Stack, Box, Text, Heading, Flex, Button } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { UpdootSection } from "../components/UpdootSection";
 import { PostButtons } from "../components/PostButtons";
@@ -28,7 +15,6 @@ const Index = () => {
   });
   console.log(variables);
   const [{ data, fetching }] = usePostsQuery({ variables });
-  const [, deletePost] = useDeletePostMutation();
 
   if (!data && !fetching) {
     return (
