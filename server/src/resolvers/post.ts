@@ -215,24 +215,25 @@ export class PostResolver {
   }
 
   @Mutation(() => Post, { nullable: true })
+  @UseMiddleware(isAuth)
   async updatePost(
-    @Arg("id") id: number,
-    @Arg("title", () => String, { nullable: true }) title: string
+    @Arg("id", () => Int) id: number,
+    @Arg("title") title: string,
+    @Arg("text") text: string,
+    @Ctx() { req }: MyContext
   ): Promise<Post | null> {
-    const post = await Post.findOne(id);
+    const results = await getConnection()
+      .createQueryBuilder()
+      .update(Post)
+      .set({ title, text })
+      .where('id = :id and "creatorId" = :creatorId', {
+        id,
+        creatorId: req.session.userId,
+      })
+      .returning("*")
+      .execute();
 
-    if (!post) {
-      return null;
-    }
-    if (typeof title !== "undefined") {
-      /**
-        post.title = title;
-        await Post.save(post)
-       */
-      await Post.update({ id }, { title });
-    }
-
-    return post;
+    return results.raw[0];
   }
 
   @Mutation(() => Boolean)
@@ -241,8 +242,7 @@ export class PostResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    /*
-    * explicit way to delete, not cascade
+    // explicit way to delete, not cascade
     const post = await Post.findOne(id);
     if (!post) {
       return false;
@@ -254,9 +254,8 @@ export class PostResolver {
 
     await Updoot.delete({ postId: id });
     await Post.delete({ id });
-    */
 
-    await Post.delete({ id, creatorId: req.session.userId });
+    // await Post.delete({ id, creatorId: req.session.userId });
     return true;
   }
 }

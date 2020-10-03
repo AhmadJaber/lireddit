@@ -29,7 +29,7 @@ export const NavBar: React.FC<{}> = ({}) => {
     );
   } else {
     body = (
-      <>
+      <Flex alignItems="center">
         <Link mr={6} fontWeight="medium">
           {data.me.username}
         </Link>
@@ -37,6 +37,7 @@ export const NavBar: React.FC<{}> = ({}) => {
         <Button
           fontWeight="medium"
           variant="link"
+          mr={6}
           onClick={() => {
             logout();
           }}
@@ -44,7 +45,13 @@ export const NavBar: React.FC<{}> = ({}) => {
         >
           Logout
         </Button>
-      </>
+
+        <NextLink href="/create-post">
+          <Button as={Link} color="teal.500">
+            Create Post!!
+          </Button>
+        </NextLink>
+      </Flex>
     );
   }
 

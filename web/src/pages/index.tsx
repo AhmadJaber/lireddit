@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { UpdootSection } from "../components/UpdootSection";
-import { isServer } from "../utils/isServer";
+import { PostButtons } from "../components/PostButtons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -28,7 +28,6 @@ const Index = () => {
   });
   console.log(variables);
   const [{ data, fetching }] = usePostsQuery({ variables });
-  const [{ data: user }] = useMeQuery();
   const [, deletePost] = useDeletePostMutation();
 
   if (!data && !fetching) {
@@ -41,16 +40,6 @@ const Index = () => {
 
   return (
     <Layout variant="regular">
-      {!user?.me ? null : (
-        <Flex justifyContent="flex-end">
-          <NextLink href="/create-post">
-            <Button as={Link} color="teal.500" my={4}>
-              Create Post!!
-            </Button>
-          </NextLink>
-        </Flex>
-      )}
-
       {!data && fetching ? (
         <div>Loading....</div>
       ) : (
@@ -69,14 +58,7 @@ const Index = () => {
                   <Text fontSize=".9rem">posted by {p.creator.username}</Text>
                   <Flex alignItems="center">
                     <Text flex={1} mt={4}>{`${p.textSnippet} ....`}</Text>
-                    <IconButton
-                      variantColor="red"
-                      aria-label="delete post"
-                      icon="delete"
-                      onClick={() => {
-                        deletePost({ id: p.id });
-                      }}
-                    />
+                    <PostButtons id={p.id} creatorId={p.creator.id} />
                   </Flex>
                 </Box>
               </Flex>
